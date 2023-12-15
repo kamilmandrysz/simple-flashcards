@@ -1,0 +1,21 @@
+{
+  "messages": {
+    "required": "Field is required.",
+    "string": "Field must be a string.",
+    "number": "Field must be a number.",
+    "boolean": "Field must be a boolean.",
+    "alphaNumeric": "Field must contain only standard letters and numbers",
+    "minLength": "Field must have at least {length} characters.",
+    "maxLength": "Field must have a maximum of {length} characters.",
+    "correctFormat": "Field must be in the correct format.",
+    "uniqueCredential": "User with this {field} already exists.",
+    "password": "Password must contain minimum 8 and maximum 20 characters, at least one uppercase letter, one lowercase letter, one number and, one special character.",
+    "wrongCredentials": "User with provided credentials doesn't exist.",
+    "unauthenticated": "No existing session",
+    "sessionExpired": "Session expired"
+  },
+  "fields": {
+    "username": "username",
+    "email": "email"
+  }
+}
