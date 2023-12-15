@@ -189,10 +189,12 @@ export class AuthenticationService {
     const currentRefreshToken = await this.refreshTokenService.findOne(token);
 
     //Check if token exist and did't expire
+    //If expired remove it and throw error
     if (
       !currentRefreshToken ||
       isAfter(new Date(), addDays(new Date(currentRefreshToken.created_at), 7))
     ) {
+      await this.refreshTokenService.remove(currentRefreshToken.id);
       throw new UnauthorizedException(
         this.i18n.t('validations.messages.unauthenticated', {
           lang: I18nContext.current().lang,

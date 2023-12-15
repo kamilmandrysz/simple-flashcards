@@ -4,10 +4,15 @@ import * as path from 'path';
 import { I18nModule, QueryResolver, AcceptLanguageResolver } from 'nestjs-i18n';
 import { JwtModule } from '@nestjs/jwt';
 import { ScheduleModule } from '@nestjs/schedule';
+import { ConfigModule } from '@nestjs/config';
 import { User, RefreshToken, UserModule } from './user';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      envFilePath: '.env',
+      isGlobal: true,
+    }),
     ScheduleModule.forRoot(),
     I18nModule.forRoot({
       fallbackLanguage: 'en',
@@ -22,19 +27,19 @@ import { User, RefreshToken, UserModule } from './user';
     }),
     JwtModule.register({
       global: true,
-      secret: 'adssadsda123123213asdsasda',
+      secret: process.env.JWT_SECRET,
     }),
     UserModule,
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: 'localhost',
-      port: 5433,
-      password: 'toor',
-      username: 'postgres',
+      host: process.env.DB_HOST,
+      port: Number(process.env.DB_PORT),
+      password: process.env.DB_PASSWORD,
+      username: process.env.DB_USERNAME,
       entities: [User, RefreshToken],
-      database: 'dev.sfc.db',
-      synchronize: true,
-      logging: true,
+      database: process.env.DB_NAME,
+      synchronize: Boolean(process.env.DB_SYNCHRONIZE),
+      logging: Boolean(process.env.DB_LOGGING),
     }),
   ],
   controllers: [],
