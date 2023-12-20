@@ -8,7 +8,7 @@ import {
   Request,
   Headers,
 } from '@nestjs/common';
-import { UserService } from './user.service';
+import { UserService } from './services';
 import { AuthenticationService } from './services/authentication.service';
 import { CreateUserDto, UserDto, SignInUserDto } from './dto';
 import { Serialize } from '../../interceptors';

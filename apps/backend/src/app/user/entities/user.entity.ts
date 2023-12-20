@@ -5,8 +5,10 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   OneToMany,
+  Relation,
 } from 'typeorm';
-import { RefreshToken } from './refreshToken.entity';
+import type { RefreshToken } from './';
+import type { FlashcardsSet } from '../../flashcards-set';
 
 @Entity()
 export class User {
@@ -22,8 +24,11 @@ export class User {
   @Column()
   password: string;
 
-  @OneToMany(() => RefreshToken, (refreshToken) => refreshToken.user)
-  tokens: RefreshToken[];
+  @OneToMany('RefreshToken', 'user')
+  tokens: Relation<RefreshToken[]>;
+
+  @OneToMany('FlashcardsSet', 'user')
+  flashcardsSets: Relation<FlashcardsSet[]>;
 
   @CreateDateColumn({
     type: 'timestamp',

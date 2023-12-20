@@ -6,6 +6,8 @@ import { JwtModule } from '@nestjs/jwt';
 import { ScheduleModule } from '@nestjs/schedule';
 import { ConfigModule } from '@nestjs/config';
 import { User, RefreshToken, UserModule } from './user';
+import { FlashcardsSetModule } from './flashcards-set/flashcards-set.module';
+import { FlashcardsSet } from './flashcards-set';
 
 @Module({
   imports: [
@@ -29,20 +31,19 @@ import { User, RefreshToken, UserModule } from './user';
       global: true,
       secret: process.env.JWT_SECRET,
     }),
-    UserModule,
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: process.env.DB_HOST,
       port: Number(process.env.DB_PORT),
       password: process.env.DB_PASSWORD,
       username: process.env.DB_USERNAME,
-      entities: [User, RefreshToken],
+      entities: [User, RefreshToken, FlashcardsSet],
       database: process.env.DB_NAME,
       synchronize: Boolean(process.env.DB_SYNCHRONIZE),
       logging: Boolean(process.env.DB_LOGGING),
     }),
+    UserModule,
+    FlashcardsSetModule,
   ],
-  controllers: [],
-  providers: [],
 })
 export class AppModule {}

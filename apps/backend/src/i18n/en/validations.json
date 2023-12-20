@@ -4,6 +4,8 @@
     "string": "Field must be a string.",
     "number": "Field must be a number.",
     "boolean": "Field must be a boolean.",
+    "object": "Field must be an object.",
+    "enum": "Field must be a valid ENUM value",
     "alphaNumeric": "Field must contain only standard letters and numbers",
     "minLength": "Field must have at least {length} characters.",
     "maxLength": "Field must have a maximum of {length} characters.",
@@ -12,7 +14,12 @@
     "password": "Password must contain minimum 8 and maximum 20 characters, at least one uppercase letter, one lowercase letter, one number and, one special character.",
     "wrongCredentials": "User with provided credentials doesn't exist.",
     "unauthenticated": "No existing session",
-    "sessionExpired": "Session expired"
+    "sessionExpired": "Session expired",
+    "getItem": "Could not get the item, please try again.",
+    "getItems": "Could not get the items, please try again.",
+    "add": "Could not add the item, please try again.",
+    "update": "Could not update the item, please try again.",
+    "remove": "Could not remove the item, please try again."
   },
   "fields": {
     "username": "username",

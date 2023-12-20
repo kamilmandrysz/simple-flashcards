@@ -1,7 +1,10 @@
 import { Module } from '@nestjs/common';
-import { UserService } from './user.service';
 import { UserController } from './user.controller';
-import { AuthenticationService, RefreshTokenService } from './services';
+import {
+  AuthenticationService,
+  RefreshTokenService,
+  UserService,
+} from './services';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User, RefreshToken } from './entities';
 
@@ -9,5 +12,6 @@ import { User, RefreshToken } from './entities';
   imports: [TypeOrmModule.forFeature([User, RefreshToken])],
   controllers: [UserController],
   providers: [UserService, AuthenticationService, RefreshTokenService],
+  exports: [UserService],
 })
 export class UserModule {}

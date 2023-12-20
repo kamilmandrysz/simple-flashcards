@@ -1,5 +1,4 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
-import { UserService } from '../user.service';
 import { resolveSettledValue } from '@flashcards/utils';
 import {
   UnprocessableEntityException,
@@ -11,6 +10,7 @@ import { JwtService } from '@nestjs/jwt';
 import { promisify } from 'util';
 import { User } from '../entities';
 import { RefreshTokenService } from './refresh-token.service';
+import { UserService } from './user.service';
 import { addDays, isAfter } from 'date-fns';
 
 const scrypt = promisify(_scrypt);
@@ -194,7 +194,6 @@ export class AuthenticationService {
       !currentRefreshToken ||
       isAfter(new Date(), addDays(new Date(currentRefreshToken.created_at), 7))
     ) {
-      await this.refreshTokenService.remove(currentRefreshToken.id);
       throw new UnauthorizedException(
         this.i18n.t('validations.messages.unauthenticated', {
           lang: I18nContext.current().lang,
