@@ -15,7 +15,9 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@flashcards/utils": ["packages/utils/src/index.ts"]
+      "@flashcards/icons": ["packages/icons/src/index.ts"],
+      "@flashcards/utils": ["packages/utils/src/index.ts"],
+      "@frontend/*": ["apps/frontend/src/*"]
     }
   },
   "exclude": ["node_modules", "tmp"]

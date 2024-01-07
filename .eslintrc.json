@@ -14,7 +14,8 @@
             "depConstraints": [
               {
                 "sourceTag": "*",
-                "onlyDependOnLibsWithTags": ["*"]
+                "onlyDependOnLibsWithTags": ["*"],
+                "allow": ["@frontend/**"]
               }
             ]
           }
