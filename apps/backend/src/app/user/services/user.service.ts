@@ -14,13 +14,19 @@ export class UserService {
   }
 
   async findByEmail(email: string): Promise<User | null> {
-    const user = await this.repo.findOne({ where: { email } });
+    const user = await this.repo
+      .createQueryBuilder()
+      .where('LOWER(email) = LOWER(:email)', { email })
+      .getOne();
 
     return user || null;
   }
 
   async findByUsername(username: string): Promise<User | null> {
-    const user = await this.repo.findOne({ where: { username } });
+    const user = await this.repo
+      .createQueryBuilder()
+      .where('LOWER(username) = LOWER(:username)', { username })
+      .getOne();
 
     return user || null;
   }
@@ -32,7 +38,7 @@ export class UserService {
   }
 
   async create(email: string, username: string, password: string) {
-    const user = await this.repo.create({ email, username, password });
+    const user = await this.repo.create({ email: email.toLowerCase(), username, password });
 
     return this.repo.save(user);
   }

@@ -1,11 +1,21 @@
 'use client';
 
-import { useForm } from 'react-hook-form';
+import Link from 'next/link';
+import clsx from 'clsx';
+import { FieldPath, useForm } from 'react-hook-form';
 import { object, string, ref } from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { emailRegEx, passwordRegEx } from '@flashcards/utils';
+import { CheckCircleIcon } from '@heroicons/react/24/solid';
+
+import { useNotifications } from '@frontend/shared/context/notification-context';
 
 import { Button, BaseTextField } from '@frontend/components';
+import { isEmptyObject, routes } from '@frontend/utils';
+import { signUpUser } from '@frontend/api';
+import { isAxiosError } from 'axios';
+import { handleAxiosErrors } from '@frontend/api/client';
+import { useState } from 'react';
 
 type Form = {
   email: string;
@@ -37,47 +47,99 @@ export const SignUpForm = () => {
     formState: { errors },
     register,
     handleSubmit,
+    setError,
   } = useForm<Form>({
     resolver: yupResolver(formSchema),
+    defaultValues: {
+      email: 'kamil-mandrysz@wp.pl',
+      username: 'Ellort98',
+      password: 'Kamilo100!',
+      repeatPassword: 'Kamilo100!',
+    },
   });
+  const [isLoading, setIsLoading] = useState(false);
+  const [isSubmittedSuccessfully, setIsSubmittedSuccessfully] = useState(false);
+  const { showNotification } = useNotifications();
 
-  const onSubmit = (data: Form) => {
-    console.log(data);
+  const onSubmit = async ({ email, username, password }: Form) => {
+    setIsLoading(true);
+
+    try {
+      await signUpUser({
+        email,
+        username,
+        password,
+      });
+
+      setIsSubmittedSuccessfully(true);
+    } catch (e) {
+      const error = handleAxiosErrors(e);
+
+      if (error.status === 422) {
+        Object.keys(error.errors).forEach((key) => {
+          setError(key as keyof Form, { message: error.errors[key] });
+        });
+      } else {
+        showNotification('error', error?.message);
+      }
+    }
+
+    setIsLoading(false);
   };
 
   return (
-    <form className="flex flex-col gap-4 lg:gap-5" onSubmit={handleSubmit(onSubmit)}>
-      <BaseTextField
-        label="Email"
-        placeholder="Enter email"
-        error={errors?.email?.message}
-        {...register('email')}
-      />
-      <BaseTextField
-        label="Username"
-        placeholder="Enter username"
-        error={errors?.username?.message}
-        {...register('username')}
-      />
-      <BaseTextField
-        type="password"
-        label="Password"
-        placeholder="Enter password"
-        error={errors?.password?.message}
-        {...register('password')}
-      />
-      <BaseTextField
-        type="password"
-        label="Repeat password"
-        placeholder="Enter password again"
-        error={errors?.repeatPassword?.message}
-        {...register('repeatPassword', {
-          required: 'Repeat Password is required',
-        })}
-      />
-      <Button className="mt-2 w-full lg:w-[100px]" type="submit">
-        Sign up
-      </Button>
-    </form>
+    <div className="relative">
+      <form
+        className={clsx('flex flex-col gap-4 lg:gap-5', { invisible: isSubmittedSuccessfully })}
+        onSubmit={handleSubmit(onSubmit)}
+      >
+        <BaseTextField
+          label="Email"
+          placeholder="Enter email"
+          error={errors?.email?.message}
+          {...register('email')}
+        />
+        <BaseTextField
+          label="Username"
+          placeholder="Enter username"
+          error={errors?.username?.message}
+          {...register('username')}
+        />
+        <BaseTextField
+          type="password"
+          label="Password"
+          placeholder="Enter password"
+          error={errors?.password?.message}
+          {...register('password')}
+        />
+        <BaseTextField
+          type="password"
+          label="Repeat password"
+          placeholder="Enter password again"
+          error={errors?.repeatPassword?.message}
+          {...register('repeatPassword', {
+            required: 'Repeat Password is required',
+          })}
+        />
+        <Button
+          className="mt-2 w-full lg:w-[100px]"
+          type="submit"
+          isLoading={isLoading}
+          disabled={isLoading || !isEmptyObject(errors)}
+        >
+          Sign up
+        </Button>
+      </form>
+
+      {isSubmittedSuccessfully ? (
+        <div className="absolute top-0 flex h-[calc(100%+3.375rem)] w-full flex-col items-center gap-2 bg-white pt-4 lg:h-[calc(100%+4rem)]">
+          <CheckCircleIcon className="fill-primary h-[12rem] w-[12rem]" />
+          <p className="text-lg font-bold">Account created successfully!</p>
+          <Link href={routes.SIGN_IN} className="mt-4">
+            <Button>Back to login page</Button>
+          </Link>
+        </div>
+      ) : null}
+    </div>
   );
 };

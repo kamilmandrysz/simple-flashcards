@@ -1,5 +1,5 @@
 import { SignInPage } from '@frontend/modules/authentication';
 
-export const Page = () => {
+export const SignInRoute = async () => {
   return <SignInPage />;
 };

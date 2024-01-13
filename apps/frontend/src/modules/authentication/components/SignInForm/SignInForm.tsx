@@ -3,6 +3,8 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { object, string } from 'yup';
 
+import { API } from '@frontend/api';
+
 import { Button, BaseTextField } from '@frontend/components';
 
 type Form = {
@@ -24,8 +26,8 @@ export const SignInForm = () => {
     resolver: yupResolver(formSchema),
   });
 
-  const onSubmit = (data: Form) => {
-    console.log(data);
+  const onSubmit = async (data: Form) => {
+    await API.get('auth/getAll');
   };
 
   return (

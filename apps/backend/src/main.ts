@@ -7,6 +7,7 @@ import { AppModule } from './app/app.module';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const port = process.env.PORT || 3000;
+  app.enableCors({ origin: ['http://localhost:4200'] });
   app.useGlobalPipes(new I18nValidationPipe());
   app.useGlobalFilters(
     new I18nValidationExceptionFilter({
@@ -15,8 +16,7 @@ async function bootstrap() {
         const result = {};
 
         errors.forEach((error) => {
-          result[error.property] =
-            error.constraints[Object.keys(error.constraints)[0]];
+          result[error.property] = error.constraints[Object.keys(error.constraints)[0]];
         });
 
         return result;

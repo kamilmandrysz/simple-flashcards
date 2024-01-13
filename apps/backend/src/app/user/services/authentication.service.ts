@@ -1,9 +1,6 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { resolveSettledValue } from '@flashcards/utils';
-import {
-  UnprocessableEntityException,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { UnprocessableEntityException, UnauthorizedException } from '@nestjs/common';
 import { randomBytes, scrypt as _scrypt } from 'crypto';
 import { I18nContext, I18nService } from 'nestjs-i18n';
 import { JwtService } from '@nestjs/jwt';
@@ -29,20 +26,13 @@ export class AuthenticationService {
     username: string
   ): Promise<{ userByEmail: User | null; userByUsername: User | null }> {
     //Get and return users by provided email and username
-    const [userByEmailSettled, userByUsernameSettled] =
-      await Promise.allSettled([
-        this.userService.findByEmail(email),
-        this.userService.findByUsername(username),
-      ]);
+    const [userByEmailSettled, userByUsernameSettled] = await Promise.allSettled([
+      this.userService.findByEmail(email),
+      this.userService.findByUsername(username),
+    ]);
 
-    const userByEmail = resolveSettledValue<User, null>(
-      userByEmailSettled,
-      null
-    );
-    const userByUsername = resolveSettledValue<User, null>(
-      userByUsernameSettled,
-      null
-    );
+    const userByEmail = resolveSettledValue<User, null>(userByEmailSettled, null);
+    const userByUsername = resolveSettledValue<User, null>(userByUsernameSettled, null);
 
     return { userByEmail, userByUsername };
   }
@@ -80,8 +70,7 @@ export class AuthenticationService {
 
   async signUp(email: string, username: string, password: string) {
     //Get users by email or username
-    const { userByEmail, userByUsername } =
-      await this.getUsersByEmailAndUsername(email, username);
+    const { userByEmail, userByUsername } = await this.getUsersByEmailAndUsername(email, username);
 
     //Check if users with provided credentials exists
     //If exists return error
@@ -111,7 +100,7 @@ export class AuthenticationService {
       }
 
       throw new UnprocessableEntityException({
-        statusCode: HttpStatus.UNPROCESSABLE_ENTITY,
+        status: HttpStatus.UNPROCESSABLE_ENTITY,
         errors,
       });
     }
@@ -135,8 +124,10 @@ export class AuthenticationService {
 
   async signIn(emailOrUsername: string, password: string) {
     //Get users by email or username
-    const { userByEmail, userByUsername } =
-      await this.getUsersByEmailAndUsername(emailOrUsername, emailOrUsername);
+    const { userByEmail, userByUsername } = await this.getUsersByEmailAndUsername(
+      emailOrUsername,
+      emailOrUsername
+    );
 
     if (!userByEmail && !userByUsername) {
       throw new UnauthorizedException(
@@ -202,18 +193,13 @@ export class AuthenticationService {
     }
 
     //Generate new tokens for user
-    const { access_token, refresh_token } = await this.generateTokens(
-      currentRefreshToken.user
-    );
+    const { access_token, refresh_token } = await this.generateTokens(currentRefreshToken.user);
 
     //Remove used refresh token
     await this.refreshTokenService.remove(currentRefreshToken.id);
 
     //Add new refresh token to database
-    await this.refreshTokenService.create(
-      refresh_token,
-      currentRefreshToken.user
-    );
+    await this.refreshTokenService.create(refresh_token, currentRefreshToken.user);
 
     //Return tokens
     return {

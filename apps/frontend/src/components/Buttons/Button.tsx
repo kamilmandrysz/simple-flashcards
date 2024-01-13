@@ -53,9 +53,11 @@ export const Button = ({
       disabled={disabled}
       {...rest}
     >
-      {leading ? <div className={clsx('-ml-0.5', { hidden: isLoading })}>{leading}</div> : null}
-      {children}
-      {trailing ? <div className={clsx('-mr-0.5', { hidden: isLoading })}>{trailing}</div> : null}
+      {leading ? <div className={clsx('-ml-0.5', { invisible: isLoading })}>{leading}</div> : null}
+      <div className={clsx({ invisible: isLoading })}>{children}</div>
+      {trailing ? (
+        <div className={clsx('-mr-0.5', { invisible: isLoading })}>{trailing}</div>
+      ) : null}
       {isLoading ? (
         <CircularLoader
           className={clsx(

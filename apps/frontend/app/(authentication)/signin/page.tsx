@@ -1,1 +1,1 @@
-export { SignInPage as default } from '@frontend/modules/authentication';
+export { SignInRoute as default } from '@frontend/modules/authentication';
