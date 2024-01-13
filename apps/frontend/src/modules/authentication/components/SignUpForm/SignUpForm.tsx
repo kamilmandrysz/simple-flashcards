@@ -1,21 +1,19 @@
 'use client';
 
+import { useState } from 'react';
 import Link from 'next/link';
 import clsx from 'clsx';
-import { FieldPath, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { object, string, ref } from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { emailRegEx, passwordRegEx } from '@flashcards/utils';
 import { CheckCircleIcon } from '@heroicons/react/24/solid';
 
 import { useNotifications } from '@frontend/shared/context/notification-context';
-
 import { Button, BaseTextField } from '@frontend/components';
 import { isEmptyObject, routes } from '@frontend/utils';
 import { signUpUser } from '@frontend/api';
-import { isAxiosError } from 'axios';
-import { handleAxiosErrors } from '@frontend/api/client';
-import { useState } from 'react';
+import { handleFormErrors } from '@frontend/utils';
 
 type Form = {
   email: string;
@@ -50,12 +48,6 @@ export const SignUpForm = () => {
     setError,
   } = useForm<Form>({
     resolver: yupResolver(formSchema),
-    defaultValues: {
-      email: 'kamil-mandrysz@wp.pl',
-      username: 'Ellort98',
-      password: 'Kamilo100!',
-      repeatPassword: 'Kamilo100!',
-    },
   });
   const [isLoading, setIsLoading] = useState(false);
   const [isSubmittedSuccessfully, setIsSubmittedSuccessfully] = useState(false);
@@ -73,15 +65,7 @@ export const SignUpForm = () => {
 
       setIsSubmittedSuccessfully(true);
     } catch (e) {
-      const error = handleAxiosErrors(e);
-
-      if (error.status === 422) {
-        Object.keys(error.errors).forEach((key) => {
-          setError(key as keyof Form, { message: error.errors[key] });
-        });
-      } else {
-        showNotification('error', error?.message);
-      }
+      handleFormErrors(e, setError, showNotification);
     }
 
     setIsLoading(false);

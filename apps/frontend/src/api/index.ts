@@ -1,3 +1,2 @@
-export { default as API, handleAxiosErrors } from './client';
-export * from './types';
+export { default as API } from './client';
 export * from './auth';

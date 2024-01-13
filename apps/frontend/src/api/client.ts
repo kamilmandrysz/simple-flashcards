@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { ApiResponseError } from './types';
 
 const API = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
@@ -8,13 +7,5 @@ const API = axios.create({
     'Content-Type': 'application/json',
   },
 });
-
-export const handleAxiosErrors = (err: unknown): ApiResponseError => {
-  if (!axios.isAxiosError(err) || !err.response?.data) {
-    throw err;
-  }
-
-  return err.response.data;
-};
 
 export default API;

@@ -1,11 +1,20 @@
 'use client';
+
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { object, string } from 'yup';
-
-import { API } from '@frontend/api';
+import { jwtDecode } from 'jwt-decode';
+import Cookies from 'js-cookie';
 
 import { Button, BaseTextField } from '@frontend/components';
+import {
+  COOKIE_ACCESS_TOKEN,
+  COOKIE_REFRESH_TOKEN,
+  UNIXTimestampToDate,
+  handleFormErrors,
+} from '@frontend/utils';
+import { useNotifications } from '@frontend/shared/context/notification-context';
+import { signInUser } from '@frontend/api';
 
 type Form = {
   emailOrUsername: string;
@@ -21,13 +30,29 @@ export const SignInForm = () => {
   const {
     formState: { errors },
     register,
+    setError,
     handleSubmit,
   } = useForm<Form>({
     resolver: yupResolver(formSchema),
   });
+  const { showNotification } = useNotifications();
 
   const onSubmit = async (data: Form) => {
-    await API.get('auth/getAll');
+    try {
+      const { access_token, refresh_token } = (await signInUser(data)).data;
+
+      const decodedAccessToken = jwtDecode(access_token);
+      const decodedRefreshToken = jwtDecode(refresh_token);
+
+      Cookies.set(COOKIE_ACCESS_TOKEN, access_token, {
+        expires: UNIXTimestampToDate(decodedAccessToken.exp || 0),
+      });
+      Cookies.set(COOKIE_REFRESH_TOKEN, refresh_token, {
+        expires: UNIXTimestampToDate(decodedRefreshToken.exp || 0),
+      });
+    } catch (e) {
+      handleFormErrors(e, setError, showNotification);
+    }
   };
 
   return (
