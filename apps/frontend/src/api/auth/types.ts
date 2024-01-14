@@ -18,6 +18,8 @@ export type SignInUserResponse = {
   refresh_token: string;
 };
 
+export type RefreshTokenResponse = SignInUserResponse;
+
 /* -------------------------------------------------------------------------- */
 
 export type User = {

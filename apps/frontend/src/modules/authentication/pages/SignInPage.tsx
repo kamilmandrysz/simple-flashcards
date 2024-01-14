@@ -11,7 +11,7 @@ export const SignInPage = () => {
 
       <SignInForm />
 
-      <Link className="mt-8 text-center text-sm lg:mt-auto lg:text-start" href={routes.SIGN_UP}>
+      <Link className="mt-8 text-center text-sm lg:mt-auto lg:text-start" href={routes.SIGN_UP.url}>
         Not a member yet?
         <span className="text-primary ml-1 font-bold">Crate account!</span>
       </Link>

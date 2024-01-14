@@ -119,7 +119,7 @@ export const SignUpForm = () => {
         <div className="absolute top-0 flex h-[calc(100%+3.375rem)] w-full flex-col items-center gap-2 bg-white pt-4 lg:h-[calc(100%+4rem)]">
           <CheckCircleIcon className="fill-primary h-[12rem] w-[12rem]" />
           <p className="text-lg font-bold">Account created successfully!</p>
-          <Link href={routes.SIGN_IN} className="mt-4">
+          <Link href={routes.SIGN_IN.url} className="mt-4">
             <Button>Back to login page</Button>
           </Link>
         </div>

@@ -11,7 +11,7 @@ export const SignUpPage = () => {
 
       <SignUpForm />
 
-      <Link className="mt-8 text-center text-sm lg:mt-10 lg:text-start" href={routes.SIGN_IN}>
+      <Link className="mt-8 text-center text-sm lg:mt-10 lg:text-start" href={routes.SIGN_IN.url}>
         Already have an account?
         <span className="text-primary ml-1 font-bold">Sign in!</span>
       </Link>
