@@ -1,10 +1,14 @@
 import { NextRequest } from 'next/server';
 
 import { authenticationGuard } from '@frontend/middleware';
+import { applySetCookie } from '@frontend/utils/server';
 
 export async function middleware(request: NextRequest) {
-  const authenticationRedirect = await authenticationGuard(request);
-  if (authenticationRedirect) return authenticationRedirect;
+  const response = await authenticationGuard(request);
+
+  applySetCookie(request, response);
+
+  return response;
 }
 
 export const config = {

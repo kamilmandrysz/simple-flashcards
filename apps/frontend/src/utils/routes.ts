@@ -1,4 +1,5 @@
 export enum AuthenticationState {
+  AVAILABLE = 'AVAILABLE',
   AUTHENTICATED = 'AUTHENTICATED',
   UNAUTHENTICATED = 'UNAUTHENTICATED',
 }
@@ -6,7 +7,7 @@ export enum AuthenticationState {
 export const routes = {
   HOME: {
     url: '/',
-    auth: null,
+    auth: AuthenticationState.AVAILABLE,
   },
   SIGN_IN: {
     url: '/signin',

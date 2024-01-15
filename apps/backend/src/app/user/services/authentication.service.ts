@@ -44,8 +44,7 @@ export class AuthenticationService {
     const access_token = await this.jwtService.signAsync(
       {
         sub: user.id,
-        username: user.username,
-        email: user.email,
+        user: { id: user.id, username: user.username, email: user.email },
       },
       {
         expiresIn: '1h',

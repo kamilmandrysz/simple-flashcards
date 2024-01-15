@@ -29,43 +29,66 @@ export async function authenticationGuard(request: NextRequest) {
 
   //If route was not found return
   if (!route) {
-    return;
+    return NextResponse.next();
   }
 
+  const { isAuthenticated, cookiesToSet } = await getUserAuthenticationStatus(request);
+
+  if (
+    route.auth === AuthenticationState.AVAILABLE ||
+    (route.auth === AuthenticationState.AUTHENTICATED && isAuthenticated) ||
+    (route.auth === AuthenticationState.UNAUTHENTICATED && !isAuthenticated)
+  ) {
+    const response = NextResponse.next();
+    cookiesToSet.forEach(({ name, value, expires }) => {
+      response.cookies.set(name, value, { expires });
+    });
+
+    return response;
+  }
+
+  const response = NextResponse.redirect(fullUrl.replace(url.pathname, routes.HOME.url), {
+    status: 302,
+  });
+  cookiesToSet.forEach(({ name, value, expires }) => {
+    response.cookies.set(name, value, { expires });
+  });
+
+  return response;
+}
+
+async function getUserAuthenticationStatus(request: NextRequest): Promise<{
+  isAuthenticated: boolean;
+  cookiesToSet: { name: string; value: string; expires: Date | number }[];
+}> {
   //Get session cookies
   const access_token = request.cookies.get(COOKIE_ACCESS_TOKEN)?.value;
   const refresh_token = request.cookies.get(COOKIE_REFRESH_TOKEN)?.value;
 
-  const authenticatedRoute = route.auth === AuthenticationState.AUTHENTICATED;
-  const allAuthenticationStatesRoute = route.auth === null;
+  const decodedAccessToken = access_token ? jwtDecode(access_token) : null;
 
-  const redirectHomeResponse = NextResponse.redirect(
-    fullUrl.replace(url.pathname, routes.HOME.url),
-    {
-      status: 302,
-    }
-  );
+  const oneDay = 24 * 60 * 60 * 1000;
 
-  //Check if user is authenticated
-  if (access_token) {
-    //If route requires authenticated user or route doesn't need authentication state return
-    if (authenticatedRoute || allAuthenticationStatesRoute) {
-      return;
+  //Check if access token is valid
+  if (decodedAccessToken) {
+    if (decodedAccessToken?.sub) {
+      return { isAuthenticated: true, cookiesToSet: [] };
     }
 
-    //If route requires unauthenticated user redirect to homepage
-    return redirectHomeResponse;
+    return {
+      isAuthenticated: false,
+      cookiesToSet: [
+        {
+          name: COOKIE_ACCESS_TOKEN,
+          value: COOKIE_ACCESS_TOKEN,
+          expires: Date.now() - oneDay,
+        },
+      ],
+    };
   }
 
-  //Check if user doesn't have refresh token
-  if (refresh_token === undefined) {
-    //If route requires authenticated user redirect to homepage
-    if (authenticatedRoute) {
-      return redirectHomeResponse;
-    }
-
-    //If route requires unauthenticated user or route doesn't need authentication state return
-    return;
+  if (!refresh_token) {
+    return { isAuthenticated: false, cookiesToSet: [] };
   }
 
   //Refresh auth tokens
@@ -80,50 +103,36 @@ export async function authenticationGuard(request: NextRequest) {
       refresh_token: new_refresh_token,
     }: RefreshTokenResponse = await res.json();
 
-    const decodedAccessToken = jwtDecode(new_access_token);
-    const decodedRefreshToken = jwtDecode(new_refresh_token);
+    const decodedNewAccessToken = jwtDecode(new_access_token);
+    const decodedNewRefreshToken = jwtDecode(new_refresh_token);
 
-    //If route requires authenticated user or route doesn't need authentication state return cookie
-    if (authenticatedRoute || allAuthenticationStatesRoute) {
-      const response = NextResponse.next();
-
-      response.cookies.set(COOKIE_ACCESS_TOKEN, new_access_token, {
-        expires: UNIXTimestampToDate(decodedAccessToken.exp || 0),
-      });
-      response.cookies.set(COOKIE_REFRESH_TOKEN, new_refresh_token, {
-        expires: UNIXTimestampToDate(decodedRefreshToken.exp || 0),
-      });
-
-      return response;
-    }
-
-    //If route requires unauthenticated user redirect to homepage cookie
-    redirectHomeResponse.cookies.set(COOKIE_ACCESS_TOKEN, new_refresh_token, {
-      expires: UNIXTimestampToDate(decodedAccessToken.exp || 0),
-    });
-    redirectHomeResponse.cookies.set(COOKIE_REFRESH_TOKEN, new_access_token, {
-      expires: UNIXTimestampToDate(decodedRefreshToken.exp || 0),
-    });
-
-    return redirectHomeResponse;
+    return {
+      isAuthenticated: true,
+      cookiesToSet: [
+        {
+          name: COOKIE_ACCESS_TOKEN,
+          value: new_access_token,
+          expires: UNIXTimestampToDate(decodedNewAccessToken.exp || 0),
+        },
+        {
+          name: COOKIE_REFRESH_TOKEN,
+          value: new_refresh_token,
+          expires: UNIXTimestampToDate(decodedNewRefreshToken.exp || 0),
+        },
+      ],
+    };
   } catch (e) {
     //Attempt to refresh token failed
-    const oneDay = 24 * 60 * 60 * 1000;
 
-    //If route requires authenticated user redirect to homepage with removed cookie
-    if (authenticatedRoute) {
-      redirectHomeResponse.cookies.set(COOKIE_REFRESH_TOKEN, COOKIE_REFRESH_TOKEN, {
-        expires: Date.now() - oneDay,
-      });
-      return redirectHomeResponse;
-    }
-
-    //If route requires unauthenticated user or route doesn't need authentication state return response with removed cookie
-    const response = NextResponse.next();
-    redirectHomeResponse.cookies.set(COOKIE_REFRESH_TOKEN, COOKIE_REFRESH_TOKEN, {
-      expires: Date.now() - oneDay,
-    });
-
-    return response;
+    return {
+      isAuthenticated: false,
+      cookiesToSet: [
+        {
+          name: COOKIE_REFRESH_TOKEN,
+          value: COOKIE_REFRESH_TOKEN,
+          expires: Date.now() - oneDay,
+        },
+      ],
+    };
   }
 }

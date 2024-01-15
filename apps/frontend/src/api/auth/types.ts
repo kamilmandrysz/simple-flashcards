@@ -27,3 +27,10 @@ export type User = {
   username: string;
   email: string;
 };
+
+export type DecodedAccessToken = {
+  sub: string;
+  iat: number;
+  exp: number;
+  user: User;
+};

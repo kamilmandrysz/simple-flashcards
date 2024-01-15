@@ -1,5 +1,6 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { object, string } from 'yup';
@@ -12,6 +13,7 @@ import {
   COOKIE_REFRESH_TOKEN,
   UNIXTimestampToDate,
   handleFormErrors,
+  routes,
 } from '@frontend/utils';
 import { useNotifications } from '@frontend/shared/context/notification-context';
 import { signInUser } from '@frontend/api';
@@ -35,6 +37,7 @@ export const SignInForm = () => {
   } = useForm<Form>({
     resolver: yupResolver(formSchema),
   });
+  const router = useRouter();
   const { showNotification } = useNotifications();
 
   const onSubmit = async (data: Form) => {
@@ -50,6 +53,9 @@ export const SignInForm = () => {
       Cookies.set(COOKIE_REFRESH_TOKEN, refresh_token, {
         expires: UNIXTimestampToDate(decodedRefreshToken.exp || 0),
       });
+
+      router.refresh();
+      router.push(routes.FLASHCARDS.url);
     } catch (e) {
       handleFormErrors(e, setError, showNotification);
     }
