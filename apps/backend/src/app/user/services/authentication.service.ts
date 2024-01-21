@@ -1,6 +1,10 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { resolveSettledValue } from '@flashcards/utils';
-import { UnprocessableEntityException, UnauthorizedException } from '@nestjs/common';
+import {
+  UnprocessableEntityException,
+  UnauthorizedException,
+  ForbiddenException,
+} from '@nestjs/common';
 import { randomBytes, scrypt as _scrypt } from 'crypto';
 import { I18nContext, I18nService } from 'nestjs-i18n';
 import { JwtService } from '@nestjs/jwt';
@@ -129,7 +133,7 @@ export class AuthenticationService {
     );
 
     if (!userByEmail && !userByUsername) {
-      throw new UnauthorizedException(
+      throw new ForbiddenException(
         this.i18n.t('validations.messages.wrongCredentials', {
           lang: I18nContext.current().lang,
         })
@@ -147,7 +151,7 @@ export class AuthenticationService {
     //Check for valid credentials
     //If credentials not valid throw error
     if (providedPassword.toString('hex') !== hash) {
-      throw new UnauthorizedException(
+      throw new ForbiddenException(
         this.i18n.t('validations.messages.wrongCredentials', {
           lang: I18nContext.current().lang,
         })

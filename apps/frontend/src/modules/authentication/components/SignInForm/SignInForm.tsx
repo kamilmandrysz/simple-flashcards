@@ -54,8 +54,8 @@ export const SignInForm = () => {
         expires: UNIXTimestampToDate(decodedRefreshToken.exp || 0),
       });
 
-      router.refresh();
       router.push(routes.FLASHCARDS.url);
+      router.refresh();
     } catch (e) {
       handleFormErrors(e, setError, showNotification);
     }

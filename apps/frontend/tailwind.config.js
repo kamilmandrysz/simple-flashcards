@@ -6,17 +6,12 @@ const forms = require('@tailwindcss/forms');
 module.exports = {
   content: ['./app/**/*.{js,ts,jsx,tsx,mdx}', './src/**/*.{js,ts,jsx,tsx,mdx}'],
   theme: {
-    screens: {
-      sm: '480px',
-      md: '768px',
-      lg: '976px',
-      xl: '1440px',
-    },
     colors: {
       ...colors,
       primary: '#6096B4',
+      'primary-dark': '#4c7890',
       secondary: '#93BFCF',
-      gray: '#BDCDD6',
+      tertiary: '#BDCDD6',
       pastel: '#EEE9DA',
     },
     extend: {},

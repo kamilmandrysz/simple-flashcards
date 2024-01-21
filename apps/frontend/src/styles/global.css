@@ -57,10 +57,6 @@ h6 {
   isolation: isolate;
 }
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
 .inset-center {
   position: absolute;
   top: 50%;
@@ -84,4 +80,66 @@ h6 {
 .transition-exit-active {
   opacity: 0;
   transition: opacity 300ms ease-in;
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .btn {
+    @apply relative inline-flex w-fit items-center justify-center gap-x-1.5 rounded-md text-center font-semibold shadow-sm transition-colors duration-300 disabled:cursor-not-allowed;
+  }
+
+  .btn-xs {
+    @apply text-xs;
+  }
+
+  .btn-sm,
+  .btn.md,
+  .btn.lg,
+  .btn.xl {
+    @apply text-sm;
+  }
+
+  .btn-xs,
+  .btn-sm {
+    @apply px-2 py-1;
+  }
+
+  .btn-md {
+    @apply px-2.5 py-1.5;
+  }
+
+  .btn-lg {
+    @apply px-3 py-2;
+  }
+
+  .btn-xl {
+    @apply px-3.5 py-2.5;
+  }
+
+  .btn-contained {
+    @apply text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 disabled:bg-slate-400;
+  }
+
+  .btn-outlined {
+    @apply ring-2 ring-inset hover:bg-slate-50 disabled:text-slate-400 disabled:ring-slate-400;
+  }
+
+  .btn-contained-primary {
+    @apply bg-primary hover:bg-primary-dark focus-visible:outline-primary;
+  }
+
+  .btn-outlined-primary {
+    @apply ring-primary text-primary;
+  }
+
+  .btn-contained-primary-dark {
+    @apply bg-primary-dark hover:bg-primary focus-visible:outline-primary-dark;
+  }
+
+  .btn-outlined-primary-dark {
+    @apply ring-primary-dark text-primary-dark;
+  }
 }

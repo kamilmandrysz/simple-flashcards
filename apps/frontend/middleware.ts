@@ -4,6 +4,8 @@ import { authenticationGuard } from '@frontend/middleware';
 import { applySetCookie } from '@frontend/utils/server';
 
 export async function middleware(request: NextRequest) {
+  console.log(request.url);
+
   const response = await authenticationGuard(request);
 
   applySetCookie(request, response);

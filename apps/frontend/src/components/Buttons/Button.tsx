@@ -26,26 +26,23 @@ export const Button = ({
     <button
       type="button"
       className={clsx(
-        'relative inline-flex w-fit items-center justify-center gap-x-1.5 rounded-md text-center font-semibold shadow-sm transition-all duration-300 disabled:cursor-not-allowed',
-        { 'px-2 py-1 text-xs': size === 'xs' },
-        { 'px-2 py-1 text-sm': size === 'sm' },
-        { 'px-2.5 py-1.5 text-sm': size === 'md' },
-        { 'px-3 py-2 text-sm': size === 'lg' },
-        { 'px-3.5 py-2.5 text-sm': size === 'xl' },
+        'btn',
+        { 'btn-xs': size === 'xs' },
+        { 'btn-sm': size === 'sm' },
+        { 'btn-md': size === 'md' },
+        { 'btn-lg': size === 'lg' },
+        { 'btn-xl': size === 'xl' },
         {
-          'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2':
-            variant === 'contained',
+          'btn-contained': variant === 'contained',
         },
         {
-          'ring-2 ring-inset': variant === 'outlined',
+          'btn-outlined': variant === 'outlined',
         },
         {
-          'bg-primary hover:bg-secondary focus-visible:outline-primary text-white disabled:bg-slate-400':
-            color === 'primary' && variant === 'contained',
+          'btn-contained-primary': color === 'primary' && variant === 'contained',
         },
         {
-          'ring-primary hover:ring-secondary hover:text-secondary text-primary disabled:text-slate-400 disabled:ring-slate-400':
-            color === 'primary' && variant === 'outlined',
+          'btn-outlined-primary': color === 'primary' && variant === 'outlined',
         },
         { '!text-transparent': isLoading },
         className

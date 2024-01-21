@@ -25,7 +25,6 @@ export const NotificationsProvider = ({ children }: { children: ReactNode }) => 
   };
 
   const hideNotification = (id: string) => {
-    console.log(notifications, id);
     setNotifications((prev) => prev.filter((notification) => notification.id !== id));
   };
 
