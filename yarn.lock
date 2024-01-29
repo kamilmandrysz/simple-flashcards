@@ -9845,6 +9845,11 @@ raw-body@2.5.2:
     iconv-lite "0.4.24"
     unpipe "1.0.0"
 
+react-circle-flags@^0.0.20:
+  version "0.0.20"
+  resolved "https://registry.yarnpkg.com/react-circle-flags/-/react-circle-flags-0.0.20.tgz#6aeffa5a74b435eb18ce3afa9f73115a7f2ccfdb"
+  integrity sha512-/Q18+veXCSA0lQWbnRo/AtR4G/NDRrukKyU6Cl7iLLXAG9KywjgFdPqHD2YJklicjfALXm2wLdbONRs0QKDITA==
+
 react-dom@^18.2.0:
   version "18.2.0"
   resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-18.2.0.tgz#22aaf38708db2674ed9ada224ca4aa708d821e3d"

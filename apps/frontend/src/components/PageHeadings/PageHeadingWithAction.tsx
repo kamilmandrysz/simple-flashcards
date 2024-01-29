@@ -6,7 +6,7 @@ type Props = { actions?: ReactNode; className?: string; heading: ReactNode };
 export function PageHeadingWithAction({ actions, heading, className }: Props) {
   return (
     <div className={clsx('mb-10 md:flex md:items-center md:justify-between', className)}>
-      <div className="min-w-0 flex-1">
+      <div className="flex min-w-0 flex-1 flex-col">
         {typeof heading === 'string' ? (
           <h2 className="text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight">
             {heading}

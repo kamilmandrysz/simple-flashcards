@@ -21,6 +21,10 @@ export const routes = {
     url: '/flashcards',
     auth: AuthenticationState.AUTHENTICATED,
   },
+  ADD_FLASHCARD: {
+    url: '/flashcards/add',
+    auth: AuthenticationState.AUTHENTICATED,
+  },
   FLASHCARD: {
     url: (id: string) => `${routes.FLASHCARD.baseUrl}/${id}`,
     auth: AuthenticationState.AUTHENTICATED,

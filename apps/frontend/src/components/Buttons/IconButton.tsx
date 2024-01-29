@@ -12,7 +12,7 @@ export const IconButton = ({
   size = 'md',
   ...rest
 }: ButtonHTMLAttributes<HTMLButtonElement> & {
-  color?: 'primary';
+  color?: 'primary' | 'transparent';
   isLoading?: boolean;
   size?: 'sm' | 'md' | 'lg';
 }) => {
@@ -20,14 +20,18 @@ export const IconButton = ({
     <button
       type="button"
       className={clsx(
-        'relative w-fit rounded-full  p-1 text-white shadow-sm  transition-all duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-not-allowed',
+        'relative w-fit rounded-full  p-1  shadow-sm  transition-all duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-not-allowed',
         { 'p-1': size === 'sm' },
         { 'p-1.5': size === 'md' },
         { 'p-2': size === 'lg' },
         { '!text-transparent': isLoading },
         {
-          'focus-visible:outline-primary bg-primary hover:bg-secondary disabled:bg-slate-400':
+          'focus-visible:outline-primary bg-primary hover:bg-secondary text-white disabled:bg-slate-400':
             color === 'primary',
+        },
+        {
+          'bg-transparent hover:bg-gray-50 focus-visible:outline-transparent disabled:text-slate-400 disabled:hover:bg-transparent':
+            color === 'transparent',
         },
         className
       )}

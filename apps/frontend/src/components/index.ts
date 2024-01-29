@@ -5,3 +5,4 @@ export * from './Loaders';
 export * from './Notifications';
 export * from './PageHeadings';
 export * from './TextFields';
+export * from './Selects';

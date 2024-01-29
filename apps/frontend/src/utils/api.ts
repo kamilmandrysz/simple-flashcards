@@ -4,16 +4,16 @@ import { FieldValues, UseFormSetError } from 'react-hook-form';
 import { Notification } from '@frontend/shared/context/notification-context';
 
 interface BaseError {
-  status: HttpStatusCode;
+  statusCode: HttpStatusCode;
 }
 
 interface UnprocessableEntityResponseError extends BaseError {
-  status: HttpStatusCode.UnprocessableEntity;
+  statusCode: HttpStatusCode.UnprocessableEntity;
   errors: Record<string, string>;
 }
 
 interface BaseResponseError extends BaseError {
-  status: Exclude<HttpStatusCode, HttpStatusCode.UnprocessableEntity>;
+  statusCode: Exclude<HttpStatusCode, HttpStatusCode.UnprocessableEntity>;
   error?: string;
   message?: string;
 }
@@ -39,7 +39,7 @@ export const handleFormErrors = (
 ) => {
   const error = handleAxiosErrors(err);
 
-  if (error.status === 422) {
+  if (error.statusCode === 422) {
     Object.keys(error.errors).forEach((key) => {
       setError(key, { message: error.errors[key] });
     });

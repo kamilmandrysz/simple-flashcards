@@ -18,6 +18,10 @@ export class UserFlashcardsSets {
   @Expose()
   userId: string;
 
+  @Transform(({ obj }) => Object.keys(obj.flashcards).length)
+  @Expose()
+  flashcardsCount: number;
+
   @Expose()
   created_at: Date;
 

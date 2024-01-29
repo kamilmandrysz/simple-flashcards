@@ -124,7 +124,7 @@ h6 {
   }
 
   .btn-outlined {
-    @apply ring-2 ring-inset hover:bg-slate-50 disabled:text-slate-400 disabled:ring-slate-400;
+    @apply ring-2 ring-inset hover:bg-white disabled:text-slate-400 disabled:ring-slate-400;
   }
 
   .btn-contained-primary {
@@ -141,5 +141,25 @@ h6 {
 
   .btn-outlined-primary-dark {
     @apply ring-primary-dark text-primary-dark;
+  }
+
+  .input-container {
+    @apply relative mt-1.5 min-w-0 flex-1;
+  }
+
+  .input-label {
+    @apply absolute -top-2 left-2 z-[1] inline-block bg-white px-1 text-xs font-medium text-gray-900;
+  }
+
+  .input-field {
+    @apply ring-secondary focus:ring-primary block h-10 w-full rounded-md border-0 bg-white py-2 text-gray-900 shadow-sm ring-1 ring-inset placeholder:text-gray-400 focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6;
+  }
+
+  .input-field-error {
+    @apply text-red-900  !ring-red-300 placeholder:text-red-300 focus:ring-red-500;
+  }
+
+  .text-error {
+    @apply mt-1 text-xs text-red-600;
   }
 }

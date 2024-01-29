@@ -13,7 +13,7 @@ import Cookies from 'js-cookie';
 
 import { User } from '@frontend/api';
 import { COOKIE_ACCESS_TOKEN, COOKIE_REFRESH_TOKEN, routes } from '@frontend/utils';
-import { Button, Dropdown } from '@frontend/components';
+import { Dropdown } from '@frontend/components';
 import { useNotifications } from '@frontend/shared/context';
 
 type Props = {
@@ -37,7 +37,7 @@ export const DefaultHeader = ({ user }: Props) => {
   }, [router]);
 
   return (
-    <div className="bg-secondary fixed top-0  z-50 flex  h-16 w-full justify-center shadow-md">
+    <div className="bg-secondary fixed top-0 z-20 flex  h-16 w-full justify-center shadow-md">
       <div className="container flex h-full w-full items-center justify-end gap-2 px-4">
         {user ? (
           <>
