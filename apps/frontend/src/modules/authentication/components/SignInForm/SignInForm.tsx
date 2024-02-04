@@ -57,7 +57,7 @@ export const SignInForm = () => {
       router.push(routes.FLASHCARDS.url);
       router.refresh();
     } catch (e) {
-      handleFormErrors(e, setError, showNotification);
+      handleFormErrors(e, showNotification, setError);
     }
   };
 

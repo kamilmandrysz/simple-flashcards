@@ -88,7 +88,7 @@ h6 {
 
 @layer components {
   .btn {
-    @apply relative inline-flex w-fit items-center justify-center gap-x-1.5 rounded-md text-center font-semibold shadow-sm transition-colors duration-300 disabled:cursor-not-allowed;
+    @apply relative inline-flex h-fit w-fit items-center justify-center gap-x-1.5 rounded-md text-center font-semibold shadow-sm transition-colors duration-300 disabled:cursor-not-allowed;
   }
 
   .btn-xs {

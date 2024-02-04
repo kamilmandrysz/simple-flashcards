@@ -21,3 +21,17 @@ export type CreateFlashcardSetPayload = {
 };
 
 export type CreateFlashcardSetResponse = FlashcardsSet;
+
+/* -------------------------------------------------------------------------- */
+
+export type FlashcardsSetInformation = {
+  id: string;
+  name: string;
+  flashcardsCount: number;
+  originalLanguage: LanguageEnum;
+  targetLanguage: LanguageEnum;
+  created_at: string;
+  updated_at: string;
+};
+
+export type GetFlashcardsSetsResponse = FlashcardsSetInformation;

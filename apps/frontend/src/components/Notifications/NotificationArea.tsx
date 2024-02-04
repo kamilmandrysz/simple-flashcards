@@ -1,5 +1,6 @@
 'use client';
 
+import { createRef, RefObject, useEffect, useRef } from 'react';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 
 import { Notification } from './';
@@ -19,8 +20,14 @@ export function NotificationArea() {
         className="flex w-full flex-col items-center space-y-4 sm:items-end"
       >
         {notifications.map((notification) => (
-          <CSSTransition key={notification.id} timeout={300} classNames="transition">
+          <CSSTransition
+            key={notification.id}
+            timeout={300}
+            classNames="transition"
+            nodeRef={notification.ref}
+          >
             <Notification
+              ref={notification.ref}
               id={notification.id}
               message={notification.message}
               type={notification.type}

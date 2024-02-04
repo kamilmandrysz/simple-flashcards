@@ -28,7 +28,7 @@ const formSchema = object().shape({
     .matches(emailRegEx, 'Email must be in the correct format.'),
   username: string()
     .required('Username is required.')
-    .min(3, 'Username must have at least {length} characters.'),
+    .min(3, 'Username must have at least 3 characters.'),
   password: string()
     .required('Password is required.')
     .matches(
@@ -65,7 +65,7 @@ export const SignUpForm = () => {
 
       setIsSubmittedSuccessfully(true);
     } catch (e) {
-      handleFormErrors(e, setError, showNotification);
+      handleFormErrors(e, showNotification, setError);
     }
 
     setIsLoading(false);

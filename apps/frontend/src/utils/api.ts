@@ -22,28 +22,49 @@ export type ApiResponseError = UnprocessableEntityResponseError | BaseResponseEr
 
 /* -------------------------------------------------------------------------- */
 
-export const handleAxiosErrors = (err: unknown): ApiResponseError => {
-  if (!isAxiosError(err) || !err.response?.data) {
-    throw err;
+export const DEFAULT_ERROR: BaseResponseError = {
+  statusCode: HttpStatusCode.InternalServerError,
+  message: 'Something went wrong, please try again later',
+};
+
+/* -------------------------------------------------------------------------- */
+
+export const handleAxiosErrors = (error: unknown): ApiResponseError => {
+  if (!isAxiosError(error) || !error.response?.data) {
+    return DEFAULT_ERROR;
   }
 
-  return err.response.data;
+  return error.response.data;
+};
+
+/* -------------------------------------------------------------------------- */
+
+export const displayErrors = (
+  error: ApiResponseError,
+  showNotification: (type: Notification['type'], message: Notification['message']) => void,
+  setError?: UseFormSetError<FieldValues>
+) => {
+  if (error.statusCode === 422) {
+    if (!setError) {
+      return;
+    }
+
+    Object.keys(error.errors).forEach((key) => {
+      setError(key, { message: error.errors[key] });
+    });
+  } else {
+    showNotification('error', error?.message || DEFAULT_ERROR.message);
+  }
 };
 
 /* -------------------------------------------------------------------------- */
 
 export const handleFormErrors = (
-  err: unknown,
-  setError: UseFormSetError<FieldValues>,
-  showNotification: (type: Notification['type'], message: Notification['message']) => void
+  error: unknown,
+  showNotification: (type: Notification['type'], message: Notification['message']) => void,
+  setError?: UseFormSetError<FieldValues>
 ) => {
-  const error = handleAxiosErrors(err);
+  const parsedError = handleAxiosErrors(error);
 
-  if (error.statusCode === 422) {
-    Object.keys(error.errors).forEach((key) => {
-      setError(key, { message: error.errors[key] });
-    });
-  } else {
-    showNotification('error', error?.message);
-  }
+  displayErrors(parsedError, showNotification, setError);
 };

@@ -6,7 +6,7 @@ import { useForm, useFieldArray, Control } from 'react-hook-form';
 import { TrashIcon } from '@heroicons/react/20/solid';
 import { LanguageEnum } from '@flashcards/utils';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { string, object, array, InferType } from 'yup';
+import { string, object, array, InferType, ref } from 'yup';
 
 import { useNotifications } from '@frontend/shared/context';
 import {
@@ -19,8 +19,9 @@ import {
   FormSelect,
   SelectOption,
 } from '@frontend/components';
-import { handleFormErrors, isEmptyObject, routes } from '@frontend/utils';
-import { CreateFlashcardSetPayload, createFlashcardSet } from '@frontend/api';
+import { displayErrors, isEmptyObject, routes } from '@frontend/utils';
+import { CreateFlashcardSetPayload } from '@frontend/api';
+import { createFlashcardsSetAction } from '@frontend/actions/flashcards';
 
 type Form = {
   name: string;
@@ -33,7 +34,7 @@ type Form = {
 };
 
 const formSchema = object().shape({
-  name: string().required('Name is required'),
+  name: string().min(3, 'Name must have at least 3 characters.').required('Name is required'),
   originalLanguage: object()
     .shape({
       value: string().required(),
@@ -51,11 +52,16 @@ const formSchema = object().shape({
       label: string().required(),
     })
     .nullable()
+    .notOneOf(
+      [ref('originalLanguage')],
+      'Translation language must be different than term language'
+    )
     .test(
       'destination-is-not-null',
       'Translation language is required',
       (destinationLanguage: SelectOption | null) => destinationLanguage !== null
     ),
+
   flashcards: array()
     .of(
       object().shape({
@@ -123,15 +129,18 @@ export const AddFlashcardSet = () => {
       targetLanguage: data.destinationLanguage?.value as LanguageEnum,
     };
 
-    try {
-      await createFlashcardSet(formData);
+    const actionResponse = await createFlashcardsSetAction(formData);
 
-      showNotification('success', 'Flashcards set created successfully!');
-      router.push(routes.FLASHCARDS.url);
-    } catch (e) {
-      handleFormErrors(e, setError, showNotification);
+    if (!actionResponse.success) {
+      displayErrors(actionResponse.error, showNotification, setError);
       setIsLoading(false);
+
+      return;
     }
+
+    showNotification('success', 'Flashcards set created successfully!');
+
+    router.push(routes.FLASHCARDS.url);
   };
 
   return (
