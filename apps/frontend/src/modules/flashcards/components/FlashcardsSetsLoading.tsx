@@ -1,6 +1,6 @@
 import { Card, PageHeadingWithAction, Skeleton } from '@frontend/components';
 
-export function FlashcardsSetsLoading() {
+export const FlashcardsSetsLoading = () => {
   return (
     <>
       <PageHeadingWithAction heading="Flashcards sets" />
@@ -15,4 +15,4 @@ export function FlashcardsSetsLoading() {
       </div>
     </>
   );
-}
+};

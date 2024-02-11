@@ -16,7 +16,7 @@ type Props = {
   flashcardsSets: FlashcardsSetInformation[];
 };
 
-export function FlashcardsPage({ flashcardsSets }: Props) {
+export const FlashcardsPage = ({ flashcardsSets }: Props) => {
   const router = useRouter();
   const { showNotification } = useNotifications();
   const [deleteSetAlertOpen, setDeleteSetAlertOpen] = useState(false);
@@ -94,7 +94,7 @@ export function FlashcardsPage({ flashcardsSets }: Props) {
       />
     </>
   );
-}
+};
 
 const FlashcardSetCard = ({
   flashcardSet,
