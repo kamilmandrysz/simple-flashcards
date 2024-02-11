@@ -2,12 +2,12 @@ import { Suspense } from 'react';
 import { notFound } from 'next/navigation';
 
 import { getFlashcardSet } from '@frontend/api';
-import { FlashcardsSetsLoading } from '@frontend/modules/flashcards';
+import { FlashcardsSetUpdateLoading } from '@frontend/modules/flashcards';
 import { UpdateFlashcardsSetPage } from '@frontend/modules/flashcards';
 
 export default async function Page({ params }: { params: { id: string } }) {
   return (
-    <Suspense key={params.id} fallback={<FlashcardsSetsLoading />}>
+    <Suspense key={params.id} fallback={<FlashcardsSetUpdateLoading />}>
       <FlashcardsSetsPage id={params.id} />
     </Suspense>
   );
