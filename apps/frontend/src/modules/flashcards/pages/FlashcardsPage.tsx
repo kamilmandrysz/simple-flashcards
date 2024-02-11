@@ -1,24 +1,24 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { PencilIcon, TrashIcon, ChevronRightIcon, FolderPlusIcon } from '@heroicons/react/20/solid';
 import { CircleFlag } from 'react-circle-flags';
 
 import { Card, CardHeader, IconButton, PageHeadingWithAction } from '@frontend/components';
-import { displayErrors, getFlagCode, routes } from '@frontend/utils';
-import { FlashcardsSetInformation } from '@frontend/api';
+import { getFlagCode, handleFormErrors, routes } from '@frontend/utils';
+import { FlashcardsSetInformation, deleteFlashcardSet } from '@frontend/api';
 import AlertDialog from '@frontend/components/Notifications/AlertDialog';
 import { useNotifications } from '@frontend/shared/context';
-import { deleteFlashcardSetAction } from '@frontend/actions/flashcards';
 
 type Props = {
   flashcardsSets: FlashcardsSetInformation[];
 };
 
 export function FlashcardsPage({ flashcardsSets }: Props) {
+  const router = useRouter();
   const { showNotification } = useNotifications();
-
   const [deleteSetAlertOpen, setDeleteSetAlertOpen] = useState(false);
   const [deleteSetAlertData, setDeleteSetAlertData] = useState<FlashcardsSetInformation | null>(
     null
@@ -45,15 +45,15 @@ export function FlashcardsPage({ flashcardsSets }: Props) {
 
     setDeleteSetAlertLoading(true);
 
-    const actionResponse = await deleteFlashcardSetAction(deleteSetAlertData.id);
+    try {
+      await deleteFlashcardSet(deleteSetAlertData.id);
 
-    if (!actionResponse.success) {
-      displayErrors(actionResponse.error, showNotification);
-    } else {
       showNotification('success', 'Flashcards set deleted successfully');
+      router.refresh();
+      onDialogClose();
+    } catch (e) {
+      handleFormErrors(e, showNotification);
     }
-
-    onDialogClose();
   };
 
   return (
@@ -102,36 +102,44 @@ const FlashcardSetCard = ({
 }: {
   flashcardSet: FlashcardsSetInformation;
   onDeleteFlashcardClick: (flashcardSet: FlashcardsSetInformation) => void;
-}) => (
-  <Card as="li" className="col-span-1">
-    <CardHeader
-      heading={flashcardSet.name}
-      actions={
-        <>
-          <IconButton className="!shadow-none" color="transparent">
-            <PencilIcon className="text-primary-dark h-5 w-5" />
-          </IconButton>
-          <IconButton
-            className="!shadow-none"
-            color="transparent"
-            onClick={() => onDeleteFlashcardClick(flashcardSet)}
-          >
-            <TrashIcon className="text-primary-dark h-5 w-5" />
-          </IconButton>
-        </>
-      }
-    />
-    <div className="mb-3 mt-4 flex items-center gap-1">
-      <CircleFlag countryCode={getFlagCode(flashcardSet.originalLanguage)} className="h-7 w-7" />
-      <ChevronRightIcon className="h-6 w-6 text-gray-700" />
-      <CircleFlag countryCode={getFlagCode(flashcardSet.targetLanguage)} className="h-7 w-7" />
-    </div>
+}) => {
+  const router = useRouter();
 
-    <p className="text-sm font-semibold">{`${flashcardSet.flashcardsCount} ${
-      flashcardSet.flashcardsCount === 1 ? 'term' : 'terms'
-    }`}</p>
-  </Card>
-);
+  return (
+    <Card as="li" className="col-span-1">
+      <CardHeader
+        heading={flashcardSet.name}
+        actions={
+          <>
+            <IconButton
+              className="!shadow-none"
+              color="transparent"
+              onClick={() => router.push(routes.FLASHCARD.url(flashcardSet.id))}
+            >
+              <PencilIcon className="text-primary-dark h-5 w-5" />
+            </IconButton>
+            <IconButton
+              className="!shadow-none"
+              color="transparent"
+              onClick={() => onDeleteFlashcardClick(flashcardSet)}
+            >
+              <TrashIcon className="text-primary-dark h-5 w-5" />
+            </IconButton>
+          </>
+        }
+      />
+      <div className="mb-3 mt-4 flex items-center gap-1">
+        <CircleFlag countryCode={getFlagCode(flashcardSet.originalLanguage)} className="h-7 w-7" />
+        <ChevronRightIcon className="h-6 w-6 text-gray-700" />
+        <CircleFlag countryCode={getFlagCode(flashcardSet.targetLanguage)} className="h-7 w-7" />
+      </div>
+
+      <p className="text-sm font-semibold">{`${flashcardSet.flashcardsCount} ${
+        flashcardSet.flashcardsCount === 1 ? 'term' : 'terms'
+      }`}</p>
+    </Card>
+  );
+};
 
 const EmptyState = () => (
   <div className="mt-16 text-center md:mt-24">

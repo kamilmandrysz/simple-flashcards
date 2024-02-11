@@ -11,9 +11,11 @@ export type FlashcardsSet = {
   updated_at: string;
 };
 
+export type GetFlashcardsSetResponse = FlashcardsSet;
+
 /* -------------------------------------------------------------------------- */
 
-export type CreateFlashcardSetPayload = {
+export type FlashcardSetFormPayload = {
   name: string;
   originalLanguage: LanguageEnum;
   targetLanguage: LanguageEnum;
@@ -21,6 +23,8 @@ export type CreateFlashcardSetPayload = {
 };
 
 export type CreateFlashcardSetResponse = FlashcardsSet;
+
+export type UpdateFlashcardsSetResponse = FlashcardsSet;
 
 /* -------------------------------------------------------------------------- */
 

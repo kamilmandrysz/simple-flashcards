@@ -19,7 +19,8 @@
     "getItems": "Could not get the items, please try again.",
     "add": "Could not add the item, please try again.",
     "update": "Could not update the item, please try again.",
-    "remove": "Could not remove the item, please try again."
+    "remove": "Could not remove the item, please try again.",
+    "notFound": "Not found"
   },
   "fields": {
     "username": "username",

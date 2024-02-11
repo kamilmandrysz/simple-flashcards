@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { FlashcardsSet } from './entities';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -26,12 +26,20 @@ export class FlashcardsSetService {
   }
 
   async getFlashcardsSetById(id: string): Promise<FlashcardsSet> {
-    const flashcardSet = await this.repo.findOne({
-      where: { id },
-      relations: ['user'],
-    });
+    try {
+      const flashcardSet = await this.repo.findOne({
+        where: { id },
+        relations: ['user'],
+      });
 
-    return flashcardSet;
+      return flashcardSet;
+    } catch (e) {
+      throw new NotFoundException(
+        this.i18n.t('validations.messages.notFound', {
+          lang: I18nContext.current().lang,
+        })
+      );
+    }
   }
 
   async createFlashcardSet(
@@ -62,10 +70,7 @@ export class FlashcardsSetService {
     return await this.repo.save(flashcardSet);
   }
 
-  async updateFlashcardSet(
-    flashcardsSetId: string,
-    attrs: Partial<FlashcardsSet>
-  ) {
+  async updateFlashcardSet(flashcardsSetId: string, attrs: Partial<FlashcardsSet>) {
     const flashcardsSet = await this.getFlashcardsSetById(flashcardsSetId);
 
     if (!flashcardsSet) {

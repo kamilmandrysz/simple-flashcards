@@ -1,15 +1,27 @@
 import { API } from '..';
 import {
-  CreateFlashcardSetPayload,
+  FlashcardSetFormPayload,
   CreateFlashcardSetResponse,
+  GetFlashcardsSetResponse,
   GetFlashcardsSetsResponse,
+  UpdateFlashcardsSetResponse,
 } from './types';
 
 const controller = 'flashcards-set';
 
-export const createFlashcardSet = (formData: CreateFlashcardSetPayload) => {
+/* -------------------------------------------------------------------------- */
+
+export const createFlashcardSet = (formData: FlashcardSetFormPayload) => {
   return API.post<CreateFlashcardSetResponse>(`${controller}`, formData);
 };
+
+/* -------------------------------------------------------------------------- */
+
+export const updateFlashcardSet = (id: string, formData: FlashcardSetFormPayload) => {
+  return API.patch<UpdateFlashcardsSetResponse>(`${controller}/${id}`, formData);
+};
+
+/* -------------------------------------------------------------------------- */
 
 export const getFlashcardSets = async (): Promise<GetFlashcardsSetsResponse[]> => {
   try {
@@ -20,6 +32,21 @@ export const getFlashcardSets = async (): Promise<GetFlashcardsSetsResponse[]> =
     return [];
   }
 };
+
+/* -------------------------------------------------------------------------- */
+
+export const getFlashcardSet = async (id: string): Promise<GetFlashcardsSetResponse | null> => {
+  try {
+    const response = await API.get<GetFlashcardsSetResponse>(`${controller}/${id}`);
+
+    return response.data;
+  } catch (e) {
+    console.log(e);
+    return null;
+  }
+};
+
+/* -------------------------------------------------------------------------- */
 
 export const deleteFlashcardSet = (id: string) => {
   return API.delete<CreateFlashcardSetResponse>(`${controller}/${id}`);
